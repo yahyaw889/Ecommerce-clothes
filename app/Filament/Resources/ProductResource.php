@@ -218,7 +218,7 @@ use Illuminate\Support\Str;
                     ->numeric()
                     ->sortable(),
                     Tables\Columns\ImageColumn::make('images')
-                    ->circular()
+                       ->circular()
                     ->stacked()
                     ->limit(3)
                     ->limitedRemainingText(),

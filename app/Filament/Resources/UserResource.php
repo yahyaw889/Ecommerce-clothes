@@ -74,23 +74,19 @@ class UserResource extends Resource
             ])
 
             ->actions([
-                
+
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make()
-                    ->authorize(fn ($record) => $record->id === Auth::user()->id),
+                    ->authorize(fn($record) => $record->id === Auth::user()->id),
                 Tables\Actions\DeleteAction::make()
-                    ->authorize(fn ($record) => $record->id === Auth::user()->id),
+                    ->authorize(fn($record) => $record->id === Auth::user()->id)
             ]);
     }
-
-
 
     public static function getPages(): array
     {
         return [
             'index' => Pages\ListUsers::route('/'),
-            // 'create' => Pages\CreateUser::route('/create'),
-
             'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
     }

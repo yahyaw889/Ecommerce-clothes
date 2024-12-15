@@ -6,6 +6,7 @@ use App\Filament\Resources\ModelNameResource\Pages;
 use App\Filament\Resources\ModelNameResource\RelationManagers;
 use App\Models\ModelName;
 use Filament\Forms;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -29,11 +30,14 @@ class ModelNameResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
+                Section::make([
+                    Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
                 Forms\Components\Toggle::make('status')
                     ->required(),
+                ])
+                
             ]);
     }
 
@@ -59,11 +63,11 @@ class ModelNameResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->filters([
-                //
-            ])
+           
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -71,20 +75,13 @@ class ModelNameResource extends Resource
                 ]),
             ]);
     }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
-    }
-
+ 
     public static function getPages(): array
     {
         return [
             'index' => Pages\ListModelNames::route('/'),
             'create' => Pages\CreateModelName::route('/create'),
-            'edit' => Pages\EditModelName::route('/{record}/edit'),
+            // 'edit' => Pages\EditModelName::route('/{record}/edit'),
         ];
     }
 }

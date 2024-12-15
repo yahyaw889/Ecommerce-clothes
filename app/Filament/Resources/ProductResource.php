@@ -58,14 +58,18 @@ use Illuminate\Support\Str;
                     ->schema([
                         Forms\Components\Select::make('Categore_id')
                             ->label('التصنيف')
-                            ->relationship('categore', 'name')
+                            ->relationship('categore', 'name',function($query){
+                                $query->where('status','!=',0);
+                           })
                             ->preload()
                             ->searchable()
                             ->required(),
 
                         Forms\Components\Select::make('brand_id')
                             ->label('العلامة التجارية')
-                            ->relationship('brand', 'name')
+                            ->relationship('brand', 'name',function($query){
+                                 $query->where('status','!=',0);
+                            })
                             ->preload()
                             ->searchable()
                             ->required(),

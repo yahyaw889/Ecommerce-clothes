@@ -44,14 +44,13 @@ use Illuminate\Support\Str;
                         Forms\Components\TextInput::make('name')
                             ->label('الاسم')
                             ->required()
-                            ->default('--')
-                            ->live(true)
+                             ->live(true)
                             ->afterStateUpdated(fn(Set $set, ?string $state) => $set('slug', Str::slug($state)))
                             ->maxLength(255),
 
                         Forms\Components\TextInput::make('slug')
                             ->label(' تاكيد الاسم')
-                            ->default('--')
+                            ->required()
                             ->hint('سيتم توليد هذا الحقل تلقائيًا . '),
                     ])->columns(2),
 
@@ -219,9 +218,10 @@ use Illuminate\Support\Str;
                     ->numeric()
                     ->sortable(),
                     Tables\Columns\ImageColumn::make('images')
-                    ->getStateUsing(fn ($record) =>  $record->images[0] ?? null)
                     ->circular()
-                    ->label('صوره المنتج'),
+                    ->stacked()
+                    ->limit(3)
+                    ->limitedRemainingText(),
                 Tables\Columns\TextColumn::make('total_price')
                     ->label('السعر الإجمالي بعد الخصم')
                     ->numeric()

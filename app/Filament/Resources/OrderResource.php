@@ -15,7 +15,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
- use Filament\Tables\Columns\ToggleColumn;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
@@ -56,9 +56,13 @@ class OrderResource extends Resource
                 Section::make('معلومات العميل')->schema([
                     TextInput::make('first_name')
                         ->required()
+                        ->rule('regex:/^[a-zA-Z\s]+$/')
+                        ->helperText('Only English letters are allowed.')
                         ->maxLength(255),
                     TextInput::make('last_name')
                         ->required()
+                        ->rule('regex:/^[a-zA-Z\s]+$/')
+                        ->helperText('Only English letters are allowed.')
                         ->maxLength(255),
                     TextInput::make('email')
                         ->email()
@@ -68,19 +72,40 @@ class OrderResource extends Resource
                         ->tel()
                         ->required()
                         ->maxLength(255),
-                    TextInput::make('country')
-                        ->nullable()
-                        ->default('Egypt'),
-                    Textarea::make('address')
-                        ->required(),
-                    Textarea::make('notes')
-                    ->nullable(),
-                        Toggle::make('status')
+                    Section::make([
+
+                        Textarea::make('address')
+                            ->required(),
+                        Textarea::make('notes')
+                            ->nullable()
+                            ->default('--'),
+                        TextInput::make('country')
+                            ->default('Egypt')
+                            ->nullable(),
+                        TextInput::make('invoice_number')
+                            ->default(function () {
+                                $lastInvoice = Order::orderBy('invoice_number', 'desc')->first();
+                                $lastInvoiceNumber = $lastInvoice ? (int) substr($lastInvoice->invoice_number, 2) : 0;
+
+                                $nextInvoiceNumber = $lastInvoiceNumber + 1;
+
+                                if ($nextInvoiceNumber > 999) {
+                                    $nextInvoiceNumber = 1;
+                                }
+
+                                return str_pad($nextInvoiceNumber, 3, '0', STR_PAD_LEFT);
+                            })
+                            ->required(),
+
+
+                    ])->columns(2),
+
+                    Toggle::make('status')
                         ->required()
                         ->label('status')
                         ->hidden(),
 
-                ])->columns(2),
+                ])->columns(),
 
 
                 Section::make('OrderItems')->schema([
@@ -88,7 +113,9 @@ class OrderResource extends Resource
                         ->relationship()
                         ->schema([
                             Select::make('product_id')
-                                ->relationship('product', 'name')
+                                ->relationship('product', 'name', function ($query) {
+                                    $query->where('status', '!=', 0);
+                                })
                                 ->label('product')
                                 ->searchable()
                                 ->preload()
@@ -103,7 +130,6 @@ class OrderResource extends Resource
                             TextInput::make('quantity')
                                 ->numeric()
                                 ->minValue(1)
-                                ->default(1)
                                 ->required()
                                 ->columnSpan(3)
                                 ->reactive()
@@ -132,44 +158,50 @@ class OrderResource extends Resource
                         ->relationship()
                         ->schema([
 
-                    Section::make([
-                        TextInput::make('price')
-                        ->numeric()
-                        ->required(),
+                            Section::make([
 
-                        TextInput::make('quantity')
-                        ->numeric()
-                        ->required()
-                        ->default(1),
-                        Select::make('size')
-                        ->label('size')
-                        ->preload()
-                        ->searchable()
-                        ->required()
-                        ->options([
-                            'S' => 'S',
-                            'M' => 'M',
-                            'L' => 'L',
-                            'XL' => 'XL',
-                            '2XL' => '2XL',
-                            '3XL' => '3XL',
-                        ]),
-                        ColorPicker::make('color')
-                        ->label('color')
-                        ->required()
-                        ->format('hex') // تحديد صيغة اللون كـ HEX
-                        ->default('#FFFFFF'), // تعيين قيمة افتراضية إذا لزم الأمر
+                                TextInput::make('name')
+                                    ->default('special')
+                                    ->required(),
 
-                    ])->columns(3),
+
+                                TextInput::make('price')
+                                    ->numeric()
+                                    ->required(),
+
+                                TextInput::make('quantity')
+                                    ->numeric()
+                                    ->required()
+                                    ->default(1),
+                                Select::make('size')
+                                    ->label('size')
+                                    ->preload()
+                                    ->searchable()
+                                    ->required()
+                                    ->options([
+                                        'S' => 'S',
+                                        'M' => 'M',
+                                        'L' => 'L',
+                                        'XL' => 'XL',
+                                        '2XL' => '2XL',
+                                        '3XL' => '3XL',
+                                    ]),
+                                ColorPicker::make('color')
+                                    ->label('color')
+                                    ->required()
+                                    ->format('hex')
+                                    ->default('#FFFFFF'),
+
+                            ])->columns(3),
                             FileUpload::make('image')->image()->nullable()
-                            ->multiple()
-                            ->maxFiles(2)
-                            ->directory('special')
-                            ->reorderable()
-                            ->required()
-                            ->hint('الحد الادنا للصور2 صور للتحميل')
-                    ])
-                    ->createItemButtonLabel('Add Special Item'),
+                                ->multiple()
+                                ->maxFiles(2)
+                                ->directory('special')
+                                ->reorderable()
+                                ->required()
+                                ->hint('الحد الادنا للصور2 صور للتحميل')
+                        ])
+                        ->createItemButtonLabel('Add Special Item'),
 
 
                     Section::make('Totals')->schema([
@@ -223,13 +255,13 @@ class OrderResource extends Resource
                 TextColumn::make('notes')->label('notes')->searchable()->toggleable(isToggledHiddenByDefault: true),
 
                 ToggleColumn::make('status')
-                ->label(' status')
-                ->onColor('success')
-                ->offColor('danger')
-                ->action(function ($record, $state) {
-                    $record->update(['status' => $state]);
+                    ->label(' status')
+                    ->onColor('success')
+                    ->offColor('danger')
+                    ->action(function ($record, $state) {
+                        $record->update(['status' => $state]);
 
-                }),
+                    }),
 
 
 
@@ -242,12 +274,12 @@ class OrderResource extends Resource
                 Tables\Actions\ActionGroup::make(actions: [
                     Tables\Actions\Action::make('viewDetails')
                         ->label('Download Invoice')
-                        ->icon('heroicon-o-arrow-down-tray')  
-                        ->url(fn ($record) => route('invoice',  $record->id)),
+                        ->icon('heroicon-o-arrow-down-tray')
+                        ->url(fn($record) => route('invoice', $record->id)),
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\ViewAction::make(),
                     Tables\Actions\DeleteAction::make(),
-                ]) ->tooltip('Actions')
+                ])->tooltip('Actions')
 
             ])
             ->bulkActions([

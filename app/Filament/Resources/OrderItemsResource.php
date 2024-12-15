@@ -12,8 +12,7 @@
     use Filament\Forms\Components\Select;
     use Filament\Forms\Components\TextInput;
     use Filament\Forms\Components\Placeholder;
-    // use Filament\Forms\Components\Number;
-    use Filament\Forms\Components\Hidden;
+     use Filament\Forms\Components\Hidden;
     use Filament\Tables\Columns\TextColumn;
     use Filament\Tables\Actions\BulkActionGroup;
     use Filament\Tables\Actions\DeleteBulkAction;
@@ -136,56 +135,6 @@
                     Tables\Actions\ViewAction::make(),
                     Tables\Actions\DeleteAction::make(),
 
-
-                    Tables\Actions\Action::make('print') // اسم الإجراء
-                        ->label('طباعة') // النص الظاهر على الزر
-                        ->action(function ($record) {
-                            // HTML لتوليد البيانات
-                            $html = "
-                                <html lang='ar'>
-                                    <head>
-                                        <meta charset='UTF-8'>
-                                        <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-                                        <title>تفاصيل الطلب</title>
-                                        <style>
-                                            body { font-family: 'Amiri', sans-serif; direction: rtl; }
-                                        </style>
-                                    </head>
-                                    <body>
-                                        <h1>تفاصيل الطلب</h1>
-                                        <p><strong>صاحب الطلب:</strong> {$record-> first_name} {$record-> last_name}</p>
-                                        <p><strong>اسم المنتج:</strong> {$record->product->name}</p>
-                                        <p><strong>الكمية:</strong> {$record->quantity}</p>
-                                        <p><strong>المبلغ:</strong> {$record->unit_amount}</p>
-                                        <p><strong>المبلغ الإجمالي:</strong> {$record->total_amount}</p>
-                                    </body>
-                                </html>
-                            ";
-
-                            // تحديد مسار الخط العربي
-                            $fontPath = storage_path('fonts/Amiri-Regular.ttf');
-
-                            // تحميل الـ PDF باستخدام DomPDF
-                            $pdf = Pdf::loadHTML($html)
-                                ->setOption('isHtml5ParserEnabled', true)  // تمكين HTML5
-                                ->setOption('isPhpEnabled', true)  // تمكين PHP داخل PDF (للخطوط)
-                                ->setOption('fontDir', storage_path('fonts')) // تحديد مسار الخطوط
-                                ->setOption('font', 'Amiri-Regular'); // تعيين الخط الذي سيُستخدم في النص
-
-                            // تحميل الملف للمستخدم
-                            return response()->stream(
-                                function () use ($pdf) {
-                                    echo $pdf->stream();
-                                },
-                                200,
-                                [
-                                    'Content-Type' => 'application/pdf',
-                                    'Content-Disposition' => 'inline; filename="order.pdf"',
-                                ]
-                            );
-                        })
-
-
                 ])
 
                 ->bulkActions([
@@ -199,7 +148,6 @@
         {
             return [
                 'index' => Pages\ListOrderItems::route('/'),
-
                 'edit' => Pages\EditOrderItems::route('/{record}/edit'),
             ];
         }
@@ -208,4 +156,16 @@
         {
             return app()->getLocale() == 'ar' ? 'عناصر الطلب ' : 'OrderItems';
         }
+     
+
+        public static function getNavigationBadge(): ?string
+        {
+            return static::getModel()::count();
+        }
+    
+        public static function getNavigationBadgeColor(): string|array|null
+        {
+            return static::getModel()::count() > 150 ? 'warning' : 'danger';
+        }
+    
     }

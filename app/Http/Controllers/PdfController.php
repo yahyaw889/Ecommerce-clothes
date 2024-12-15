@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\PricingSetting;
 use App\Models\Sosherl;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class PdfController extends Controller
 {
@@ -24,7 +25,11 @@ class PdfController extends Controller
 
     $data = compact('order', 'tax', 'social', 'total');
 
-    return view('order.invoices', $data);
+    $pdf = Pdf::loadView('order.invoices', $data);
+
+   return $pdf->download("invoice_{$id}.pdf");
+  
+    // return view('order.invoices', $data);
 }
 
 }

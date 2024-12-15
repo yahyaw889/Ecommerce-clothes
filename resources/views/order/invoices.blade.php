@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<meta charset="UTF-8">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -189,7 +188,9 @@
         <div class="section">
             <h2 class="section-title">Bill To</h2>
             <p><strong>Name:</strong> {{ $order->first_name }} {{ $order->last_name }}</p>
-            <p><strong>Address:</strong> {{ $order->address }}, {{ $order->country }}</p>
+
+            <p><strong>Address:</strong> {{ $order->address }}</p>
+            <p><strong>Country:</strong> {{ $order->country }}</p>
             <p><strong>Phone:</strong> {{ $order->phone }}</p>
         </div>
 
@@ -209,7 +210,7 @@
                 <tbody>
                     @foreach ($order->items as $item)
                         <tr>
-                            <td>{{ $item->product->name }}</td>
+                            <td>{{ $item->product->slug }}</td>
                             <td>{{ $item->quantity }}</td>
                             <td class="text-right">${{ $item->unit_amount }}</td>
                             <td class="text-right">${{ $item->total_amount }}</td>
@@ -239,14 +240,12 @@
                     </tr>
                 </tfoot>
             </table>
-        </div>
-
-        <!-- Footer -->
-        <div class="footer">
             <p>If you have any questions concerning this invoice, use the following contact information:</p>
             <p>Contact: {{ $social->email }}</p>
             <p class="thank-you">THANK YOU!</p>
         </div>
+
+         
     </div>
 </body>
 

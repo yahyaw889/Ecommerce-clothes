@@ -253,4 +253,13 @@ class SpecialResource extends Resource
     {
         return app()->getLocale() === 'ar' ? 'الرسم الإبداعي' : 'Specials';
     }
+    public static function getNavigationBadge(): ?string
+        {
+            return static::getModel()::count();
+        }
+    
+        public static function getNavigationBadgeColor(): string|array|null
+        {
+            return static::getModel()::count() > 150 ? 'warning' : 'danger';
+        }
 }

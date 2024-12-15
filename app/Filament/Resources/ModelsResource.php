@@ -1,22 +1,17 @@
 <?php
-
 namespace App\Filament\Resources;
-
 use App\Filament\Resources\ModelsResource\Pages;
 use App\Filament\Resources\ModelsResource\RelationManagers;
 use App\Models\Models;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Section;
+ use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-
+ 
 class ModelsResource extends Resource
 {
     protected static ?string $model = Models::class;
@@ -33,33 +28,34 @@ class ModelsResource extends Resource
         return $form
             ->schema([
                 Section::make([
-                    Grid::make()
-                    ->schema([
-
-                FileUpload::make('image_forward')
-                ->label('صورة الأمامية')
-                    ->directory('models')
-                    ->required()
-                    ->columnSpanFull(),
-                FileUpload::make('image_back')
-                    ->label('صورة الخلفية')
-                    ->directory('models')
-                    ->required()
-                    ->columnSpanFull(),
+                 Section::make([
                     Forms\Components\Select::make('model_name_id') 
                     ->label('نوع الموديل')
                     ->preload()
-                    ->relationship('model', 'name')
+                    ->relationship('model', 'name',function($query){
+                        $query->where('status','!=',0);
+                    })
                     ->searchable()
                     ->required(),
-
                 Forms\Components\ColorPicker::make('color')
                     ->label('اللون')
                     ->required(),
-                Forms\Components\Toggle::make('status')
-                    ->required()
-                    ->default(true),
-            ])
+                 ])->columns(2),
+                 Section::make([
+                    FileUpload::make('image_forward')
+                ->label('صورة الأمامية')
+                    ->directory('models')
+                    ->required() ,
+                FileUpload::make('image_back')
+                    ->label('صورة الخلفية')
+                    ->directory('models')
+                    ->required(),
+                    
+                
+                 ])->columns(2),
+                 Forms\Components\Toggle::make('status')
+                 ->required()
+                 ->default(true),
         ])
         ]);
     }
@@ -80,9 +76,11 @@ class ModelsResource extends Resource
                     })
                     ->html(),
                 Tables\Columns\ImageColumn::make('image_forward')
-                    ->label('صورة الأمامية'),
+                    ->label('صورة الأمامية')
+                    ->circular(),
                 Tables\Columns\ImageColumn::make('image_back')
-                    ->label('صورة الخلفية'),
+                    ->label('صورة الخلفية')
+                    ->circular(),
                     ToggleColumn::make('status')
                     ->label(' حاله المنتج')
                     ->onColor('success')
@@ -99,9 +97,7 @@ class ModelsResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->filters([
-                //
-            ])
+           
             ->actions([
                 Tables\Actions\ActionGroup::make(actions: [
                     Tables\Actions\EditAction::make(),
@@ -117,19 +113,12 @@ class ModelsResource extends Resource
             ]);
     }
 
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
-    }
-
+  
     public static function getPages(): array
     {
         return [
             'index' => Pages\ListModels::route('/'),
             'create' => Pages\CreateModels::route('/create'),
-            'edit' => Pages\EditModels::route('/{record}/edit'),
-        ];
+         ];
     }
 }

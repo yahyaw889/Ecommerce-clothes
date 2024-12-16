@@ -56,9 +56,7 @@ class OrderResource extends Resource
                 Section::make('معلومات العميل')->schema([
                     TextInput::make('first_name')
                         ->required()
-                        ->rule('regex:/^[a-zA-Z\s]+$/')
-                        ->helperText('Only English letters are allowed.')
-                        ->maxLength(255),
+                         ->maxLength(255),
                     TextInput::make('last_name')
                         ->required()
                         ->rule('regex:/^[a-zA-Z\s]+$/')
@@ -84,16 +82,16 @@ class OrderResource extends Resource
                             ->nullable(),
                         TextInput::make('invoice_number')
                             ->default(function () {
-                                $lastInvoice = Order::orderBy('invoice_number', 'desc')->first();
-                                $lastInvoiceNumber = $lastInvoice ? (int) substr($lastInvoice->invoice_number, 2) : 0;
+                                
+                                $nextInvoiceNumber =  rand(10000,10000000);
 
-                                $nextInvoiceNumber = $lastInvoiceNumber + 1;
+                                while(Order::where('invoice_number' , $nextInvoiceNumber )->exists()){
+                                    $nextInvoiceNumber =  rand(10000,100000000);
 
-                                if ($nextInvoiceNumber > 999) {
-                                    $nextInvoiceNumber = 1;
                                 }
+                                
 
-                                return str_pad($nextInvoiceNumber, 3, '0', STR_PAD_LEFT);
+                                return "N-". str_pad($nextInvoiceNumber, 3, '0', STR_PAD_LEFT);
                             })
                             ->required(),
 
@@ -163,8 +161,6 @@ class OrderResource extends Resource
                                 TextInput::make('name')
                                     ->default('special')
                                     ->required(),
-
-
                                 TextInput::make('price')
                                     ->numeric()
                                     ->required(),
@@ -273,9 +269,13 @@ class OrderResource extends Resource
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\ActionGroup::make(actions: [
                     Tables\Actions\Action::make('viewDetails')
+                        ->label('Show Invoice')
+                        ->icon('heroicon-o-arrows-pointing-out')
+                        ->url(fn($record) => route('invoice', $record->id)),
+                    Tables\Actions\Action::make('viewDetails')
                         ->label('Download Invoice')
                         ->icon('heroicon-o-arrow-down-tray')
-                        ->url(fn($record) => route('invoice', $record->id)),
+                        ->url(fn($record) => route('invoice_download', $record->id)),
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\ViewAction::make(),
                     Tables\Actions\DeleteAction::make(),

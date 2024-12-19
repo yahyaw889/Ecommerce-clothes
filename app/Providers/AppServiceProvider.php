@@ -6,6 +6,7 @@ use App\Models\Order;
 use App\Models\OrderItems;
 use App\Observers\ItemObserver;
 use App\Observers\OrderObserver;
+use BezhanSalleh\FilamentLanguageSwitch\LanguageSwitch;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\RateLimiter;
@@ -26,6 +27,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+
+        LanguageSwitch::configureUsing(function (LanguageSwitch $switch) {
+            $switch->locales(['ar','en']);  
+        });
+
         // Register the OrderObserver for the Order model
         Order::observe(OrderObserver::class);
         OrderItems::observe(ItemObserver::class);

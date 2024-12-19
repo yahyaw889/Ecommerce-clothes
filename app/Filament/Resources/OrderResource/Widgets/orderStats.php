@@ -13,6 +13,20 @@ class orderStats extends BaseWidget
 {
     protected function getStats(): array
     {
+        $totalOrderValue = OrderItems::query()
+            ->selectRaw('SUM(total_amount) as total_order_value')
+            ->join('orders', 'orders.id', '=', 'order_items.order_id')
+            ->where('orders.status', 1)
+            ->first()
+            ->total_order_value ?? 0;
+
+        $totalSpecialValue = Special::query()
+            ->selectRaw('SUM(price * quantity) as total_special_value')
+            ->join('orders', 'orders.id', '=', 'specials.order_id')
+            ->where('orders.status', 1)
+            ->where('specials.status', 1)
+            ->first()
+            ->total_special_value ?? 0;
         return [
             Stat::make('  جمبع الطلبات علي الموقع', Order::count())
                 ->description('  جمبع الطلبات علي الموقع ')
@@ -39,11 +53,11 @@ class orderStats extends BaseWidget
              
             Stat::make(
                 '  مجموع المبعات من  المنتجات المتوفره علي الموقع ',
-                Number::currency(OrderItems::query()->sum('total_amount'))
+                Number::currency($totalOrderValue)
             ),
             Stat::make(
                 ' مجموع المبعات من  المنتجات     الخاصه ',
-                Number::currency(Special::query()->sum('price'))
+                Number::currency($totalSpecialValue)
             )
 
 

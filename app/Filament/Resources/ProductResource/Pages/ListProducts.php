@@ -23,7 +23,7 @@ class ListProducts extends ListRecords
         return [
             'all' => Tab::make('الكل'),
             'out_of_stock' => Tab::make()->query(fn($query) => $query->where('quantity', 0))->label('المنتجات الغير متوفرة'),
-            'in_stock' => Tab::make()->query(fn($query) => $query->where('quantity', '>', 0))->label('المنتجات متوفرة'),
+            'in_stock' => Tab::make()->query(fn($query) => $query->where('status', 0))->label('المنتجات غير مفعلة'),
         ];
     }
 

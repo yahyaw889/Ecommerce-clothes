@@ -15,6 +15,8 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
+use Filament\Forms\Components\FileUpload;
+
 
 class SosherlResource extends Resource
 {
@@ -68,6 +70,16 @@ class SosherlResource extends Resource
                         ->default('--')
                         ->required(),
                 ]),
+                
+               
+                Section::make('صور الموقع')->schema([
+                    FileUpload::make('image')
+                    ->directory('images')
+                    ->label('صورة الموقع')
+                    ->image(),
+                ]),
+
+
 
                 Section::make('لنكات التواصل')->schema([
                     TextInput::make('youtube')

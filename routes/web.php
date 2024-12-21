@@ -21,3 +21,5 @@ Route::get('/invoice/{id}', [PdfController::class , 'generatePDF'])->name('invoi
     
 //     return ;
 // });
+
+

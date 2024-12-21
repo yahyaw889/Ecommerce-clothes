@@ -19,6 +19,7 @@ use Filament\Forms\Set;
 use Illuminate\Support\Str;
  class ProductResource extends Resource
 {
+    
     protected static ?string $model = Product::class;
     protected static ?string $recordTitleAttribute = 'name';//searsh
 
@@ -37,6 +38,7 @@ use Illuminate\Support\Str;
 
     public static function form(Form $form): Form
     {
+        
         return $form
             ->schema([
                 Section::make('معلومات المنتج')
@@ -82,8 +84,10 @@ use Illuminate\Support\Str;
                             ->label('الألوان')
                             ->schema([
                                 Forms\Components\ColorPicker::make('color')
-                                    ->label('اختر لون')
-                                    ->required(),
+                                    ->label('color')
+                                    ->required()
+                                    ->format('hex')
+                                    ->default('#FFFFFF'),
                             ])
                             ->columns(1)
                             ->createItemButtonLabel('أضف لوناً جديداً')

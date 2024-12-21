@@ -24,6 +24,7 @@ class Product extends Model
     ];
 
 
+
     public function getFinalPriceAttribute()
     {
         return round($this->price -  ($this->discount ), 2);
@@ -31,7 +32,7 @@ class Product extends Model
 
     public function getTotalPriceAttribute()
     {
-        return round($this->final_price * ($this->quantity ?: 1), 2);
+        return '$ '.round(  $this->final_price * 1, 2);
     }
 
     public function brand()
@@ -45,31 +46,7 @@ class Product extends Model
     }
 
 
-    protected function description(): Attribute
-    {
-        return Attribute::make(
-            get: fn (string $value) => str::markdown($value),
-        );
-    }
-    protected function color(): Attribute
-    {
-        return Attribute::make(
-            get: function ($value) {
-                $lastArray = [];
-
-                $decodedValue = json_decode($value, true);
-
-                if(is_array($decodedValue)){
-                foreach ($decodedValue as $oneVal) {
-                    $lastArray[] = $oneVal['color'];
-                }
-                return $lastArray;
-                }else{
-                    return $decodedValue;
-                }
-            }
-        );
-    }
+  
 
 // using many scope to handle different types of querys
 

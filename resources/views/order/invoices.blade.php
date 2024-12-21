@@ -39,8 +39,8 @@
             display: flex;
             align-items: center;
             border-top: 8px solid #2563eb;
-            padding-bottom: 20px;
-            margin-bottom: 30px;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
         }
 
         .logo {
@@ -111,6 +111,7 @@
             margin-top: 20px;
             text-align: center;
             color: #666;
+            align-items: center;
         }
 
         .footer p {
@@ -169,7 +170,7 @@
         <!-- Header -->
         <div class="header">
             {{-- @dd(file_exists(public_path('storage/images/1.jpg'))); --}}
-            <img src="{{ url('storage/images/logo.png') }}" alt="Logo" class="logo">
+            <img src="{{ url('public/storage/' . $social->image ) }}" alt="Logo" class="logo">
             <div class="store-info">
                 <h1 class="store-title">ARTIVA STORE</h1>
                 <p class="contact-info">Phone number: {{ $social->phone }}</p>
@@ -189,8 +190,7 @@
             <h2 class="section-title">Bill To</h2>
             <p><strong>Name:</strong> {{ $order->first_name }} {{ $order->last_name }}</p>
 
-            <p><strong>Address:</strong> {{ $order->address }}</p>
-            <p><strong>Country:</strong> {{ $order->country }}</p>
+            <p><strong>Address:</strong> {{ $order->address }} , {{ $order->country }}</p>
             <p><strong>Phone:</strong> {{ $order->phone }}</p>
         </div>
 

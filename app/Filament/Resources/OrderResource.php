@@ -59,8 +59,6 @@ class OrderResource extends Resource
                          ->maxLength(255),
                     TextInput::make('last_name')
                         ->required()
-                        ->rule('regex:/^[a-zA-Z\s]+$/')
-                        ->helperText('Only English letters are allowed.')
                         ->maxLength(255),
                     TextInput::make('email')
                         ->email()

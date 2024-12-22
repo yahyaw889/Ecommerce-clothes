@@ -108,7 +108,7 @@ class Product extends Model
         $quantity = Sosherl::query()->first()->quantity;
 
         if ($quantity) {
-            $query->where('quantity', '!=', 0);
+            $query->where('quantity', '>', 0);
         }
 
         return $query;

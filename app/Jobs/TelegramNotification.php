@@ -18,15 +18,14 @@ class TelegramNotification implements ShouldQueue
     protected $order;
     protected $users;
 
-    public function __construct($order, $users)
+    public function __construct($order)
     {
         $this->order = $order;
-        $this->users = $users;
     }
 
     public function handle()
     {
         // Send notification to users
-        Notification::send($this->users, new OrderCreatedNotification($this->order));
+        Notification::send(User::first(), new OrderCreatedNotification($this->order));
     }
 }

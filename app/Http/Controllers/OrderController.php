@@ -224,7 +224,7 @@ private function uploadImages($images, $folder)
         $users = User::all();
 
         MailNotification::dispatch($order);
-        TelegramNotification::dispatch($order , $users);
+        TelegramNotification::dispatch($order);
 
 
     dispatch(function () use ($order ,  $users) {

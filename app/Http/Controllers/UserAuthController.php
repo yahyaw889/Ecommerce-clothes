@@ -52,6 +52,7 @@ class UserAuthController extends Controller
         $token = $user->createToken($user->name . '-AuthToken')->plainTextToken;
 
         return $this->success([
+            'user' => $user,
             'access_token' => $token,
         ] , 200, 'Login Successfully');
     }

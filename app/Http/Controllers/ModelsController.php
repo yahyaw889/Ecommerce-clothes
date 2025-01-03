@@ -18,9 +18,15 @@ class ModelsController extends Controller
     try {
         $models = ModelName::query()->where('status', 1)->get();
         $allmodels = [];
-        foreach ($models as $model)   {
-            $allmodels[$model->name] = Models::query()->where('model_name_id', $model->id)->get();
+        foreach ($models as $model) {
+            $items = Models::where('model_name_id', $model->id)->get();
+            foreach ($items as $item) {
+                $item->image_forward = $this->accessorImages($item->image_forward);
+                $item->image_back = $this->accessorImages($item->image_back);
+            }
+            $allmodels[$model->name] = $items;
         }
+
         // Fetch pricing information
         $pricing = PricingSetting::query()->first();
 
@@ -30,6 +36,8 @@ class ModelsController extends Controller
         if (!$pricing) {
             return $this->ErrorResponse('Pricing information not found.', 404, 'Pricing not found.');
         }
+
+
 
         $data = [
             'pricing' => $pricing->model_price,
@@ -48,5 +56,10 @@ class ModelsController extends Controller
             $exception->getMessage()
         );
     }
+}
+
+protected function accessorImages(?string $value): string
+{
+        return asset('public/storage/' . $value);
 }
 }

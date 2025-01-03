@@ -19,6 +19,7 @@ class ProductController extends Controller
      */
     public function index()
     {
+    try{
         $this->incrementViews();
 
         $products = Product::query()
@@ -33,6 +34,9 @@ class ProductController extends Controller
         $products = $this->applyAccessors($products);
 
         return $this->success($products, 200);
+    } catch (\Exception $e) {
+        return $this->ErrorResponse($e->getMessage(), 404, 'No products available');
+    }
     }
 
     public function more_sold_products()
@@ -191,36 +195,36 @@ class ProductController extends Controller
             if ($products instanceof \Illuminate\Pagination\LengthAwarePaginator) {
                 // Transform each item in the paginator
                 $products->getCollection()->transform(function ($product) {
-                    $product->description = $this->accessorDescription($product->description);
+                    // $product->description = $this->accessorDescription($product->description);
                     $product->color = $this->accessorColor($product->color);
                     $product->images = $this->accessorImages($product->images);
-        
+
                     return $product;
                 });
-        
+
                 return $products;
             } elseif (is_array($products)) {
                 return array_map(function ($product) {
-                    $product->description = $this->accessorDescription($product->description);
+                    // $product->description = $this->accessorDescription($product->description);
                     $product->color = $this->accessorColor($product->color);
                     $product->images = $this->accessorImages($product->images);
-        
+
                     return $product;
                 }, $products);
             } else {
-                $products->description = $this->accessorDescription($products->description);
+                // $products->description = $this->accessorDescription($products->description);
                 $products->color = $this->accessorColor($products->color);
                 $products->images = $this->accessorImages($products->images);
-        
+
                 return $products;
             }
         }
 
 
-    protected function accessorDescription(string $value): string
-    {
-        return Str::markdown($value);
-    }
+    // protected function accessorDescription(string $value): string
+    // {
+    //     return Str::markdown($value);
+    // }
 
    protected function accessorColor(?array $value): array
     {

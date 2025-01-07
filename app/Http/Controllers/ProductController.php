@@ -42,7 +42,6 @@ class ProductController extends Controller
     public function more_sold_products()
     {
         try {
-            $this->incrementViews();
 
             $products = Product::query()
                 ->active()

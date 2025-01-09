@@ -80,14 +80,14 @@ class OrderResource extends Resource
                             ->nullable(),
                         TextInput::make('invoice_number')
                             ->default(function () {
-                                
+
                                 $nextInvoiceNumber =  rand(10000,10000000);
 
                                 while(Order::where('invoice_number' , $nextInvoiceNumber )->exists()){
                                     $nextInvoiceNumber =  rand(10000,100000000);
 
                                 }
-                                
+
 
                                 return "N-". str_pad($nextInvoiceNumber, 3, '0', STR_PAD_LEFT);
                             })
@@ -109,9 +109,7 @@ class OrderResource extends Resource
                         ->relationship()
                         ->schema([
                             Select::make('product_id')
-                                ->relationship('product', 'name', function ($query) {
-                                    $query->where('status', '!=', 0);
-                                })
+                                ->relationship('product', 'name')
                                 ->label('product')
                                 ->searchable()
                                 ->preload()

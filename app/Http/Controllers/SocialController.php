@@ -16,6 +16,7 @@ class SocialController extends Controller
     if(!$social){
         return $this->ErrorResponse('No social media found' , 404);
     }
+    $social->image = $social->image ?  asset('public/storage/' . $social->image) : null;
     unset($social->sorting_product);
     unset($social->quantity);
     return $this->success($social);

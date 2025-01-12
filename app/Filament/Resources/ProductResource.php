@@ -156,6 +156,7 @@ use Illuminate\Support\Str;
                     ->schema([
                         FileUpload::make('images')
                             ->multiple()
+                            ->maxFiles(5)
                             ->directory('products')
                             ->reorderable()
 

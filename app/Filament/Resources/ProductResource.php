@@ -19,7 +19,7 @@ use Filament\Forms\Set;
 use Illuminate\Support\Str;
  class ProductResource extends Resource
 {
-    
+
     protected static ?string $model = Product::class;
     protected static ?string $recordTitleAttribute = 'name';//searsh
 
@@ -34,11 +34,11 @@ use Illuminate\Support\Str;
     {
         return app()->getLocale() === 'ar' ? "المنتجات" : "Product";
     }
-    
+
 
     public static function form(Form $form): Form
     {
-        
+
         return $form
             ->schema([
                 Section::make('معلومات المنتج')
@@ -156,7 +156,6 @@ use Illuminate\Support\Str;
                     ->schema([
                         FileUpload::make('images')
                             ->multiple()
-                            ->maxFiles(5)
                             ->directory('products')
                             ->reorderable()
 

@@ -62,4 +62,8 @@ protected function accessorImages(?string $value): string
 {
         return asset('public/storage/' . $value);
 }
+
+
+
+
 }

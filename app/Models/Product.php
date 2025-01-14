@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class Product extends Model
@@ -46,7 +47,7 @@ class Product extends Model
     }
 
 
-  
+
 
 // using many scope to handle different types of querys
 
@@ -114,5 +115,48 @@ class Product extends Model
         return $query;
     }
 
+
+
+    protected static function booted()
+    {
+        self::deleted(function (Product $product) {
+            $images = $product->images;
+
+            if (is_array($images)) {
+                foreach ($images as $image) {
+                    Storage::disk('public')->delete($image);
+                }
+            } elseif (is_string($images)) {
+                Storage::disk('public')->delete($images);
+            }
+
+        });
+
+
+
+
+        self::updated(function (Product $product) {
+            $originalImages = $product->getOriginal('images');
+
+            $currentImages = $product->images;
+
+            if ($originalImages !== $currentImages) {
+                $originalImagesArray = is_array($originalImages) ? $originalImages : json_decode($originalImages, true);
+                $currentImagesArray = is_array($currentImages) ? $currentImages : json_decode($currentImages, true);
+
+                if (is_array($originalImagesArray)) {
+                    foreach ($originalImagesArray as $image) {
+                        if (!in_array($image, $currentImagesArray, true)) {
+                            Storage::disk('public')->delete($image);
+                        }
+                    }
+                } elseif (is_string($originalImages)) {
+                    if ($originalImages !== $currentImages) {
+                        Storage::disk('public')->delete($originalImages);
+                    }
+                }
+            }
+        });
+    }
 
 }

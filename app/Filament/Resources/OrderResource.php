@@ -56,7 +56,7 @@ class OrderResource extends Resource
                 Section::make('معلومات العميل')->schema([
                     TextInput::make('first_name')
                         ->required()
-                         ->maxLength(255),
+                        ->maxLength(255),
                     TextInput::make('last_name')
                         ->required()
                         ->maxLength(255),
@@ -78,6 +78,15 @@ class OrderResource extends Resource
                         TextInput::make('country')
                             ->default('Egypt')
                             ->nullable(),
+                            // working here
+                        Select::make('city_id')
+                            ->label('المدينة')
+                            ->relationship('city', 'name',function($query){
+                                $query->where('status','!=',0);
+                            })
+                            ->preload()
+                            ->searchable()
+                            ->required(),
                         TextInput::make('invoice_number')
                             ->default(function () {
 
@@ -97,7 +106,6 @@ class OrderResource extends Resource
                     ])->columns(2),
 
                     Toggle::make('status')
-                        ->required()
                         ->label('status')
                         ->hidden(),
 
@@ -113,7 +121,7 @@ class OrderResource extends Resource
                                 ->label('product')
                                 ->searchable()
                                 ->preload()
-                                ->required()
+
                                 ->distinct()
                                 ->columnSpan(4)
                                 ->reactive()
@@ -124,7 +132,7 @@ class OrderResource extends Resource
                             TextInput::make('quantity')
                                 ->numeric()
                                 ->minValue(1)
-                                ->required()
+
                                 ->columnSpan(3)
                                 ->reactive()
                                 ->afterStateUpdated(
@@ -133,16 +141,17 @@ class OrderResource extends Resource
                                 ),
                             TextInput::make('unit_amount')
                                 ->numeric()
-                                ->required()
                                 ->disabled()
                                 ->dehydrated()
                                 ->columnSpan(3),
                             TextInput::make('total_amount')
                                 ->numeric()
                                 ->dehydrated()
-                                ->required()
+
                                 ->columnSpan(2),
-                        ])->columns(12),
+                        ])->columns(12)
+                        ->createItemButtonLabel('أضف منتج ')
+                        ->default([]),
                 ]),
 
 
@@ -155,8 +164,7 @@ class OrderResource extends Resource
                             Section::make([
 
                                 TextInput::make('name')
-                                    ->default('special')
-                                    ->required(),
+                                    ->default('special'),
                                 TextInput::make('price')
                                     ->numeric()
                                     ->required(),
@@ -169,7 +177,7 @@ class OrderResource extends Resource
                                     ->label('size')
                                     ->preload()
                                     ->searchable()
-                                    ->required()
+
                                     ->options([
                                         'S' => 'S',
                                         'M' => 'M',
@@ -187,13 +195,17 @@ class OrderResource extends Resource
                             ])->columns(3),
                             FileUpload::make('image')->image()->nullable()
                                 ->multiple()
+                                ->required()
                                 ->maxFiles(2)
                                 ->directory('special')
                                 ->reorderable()
-                                ->required()
+
                                 ->hint('الحد الادنا للصور2 صور للتحميل')
                         ])
-                        ->createItemButtonLabel('Add Special Item'),
+                        ->createItemButtonLabel('Add Special Item')
+                        ->columns(1)
+                            ->createItemButtonLabel('أضف منتج خاص')
+                            ->default([]),
 
 
                     Section::make('Totals')->schema([

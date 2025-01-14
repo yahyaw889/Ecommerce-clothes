@@ -91,6 +91,10 @@ class AdminPanelProvider extends PanelProvider
                     ->label('Models')
                     ->icon('heroicon-s-briefcase'),
                 NavigationGroup::make()
+                    ->label('Places')
+                    ->icon('heroicon-s-wifi')
+                    ->collapsed(),
+                NavigationGroup::make()
                     ->label('Settings')
                     ->icon('heroicon-s-cog')
                     ->collapsed(),

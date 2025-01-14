@@ -46,7 +46,7 @@ use Illuminate\Support\Str;
                         Forms\Components\TextInput::make('name')
                             ->label('الاسم')
                             ->required()
-                             ->live(true)
+                            ->live(true)
                             ->afterStateUpdated(fn(Set $set, ?string $state) => $set('slug', Str::slug($state)))
                             ->maxLength(255),
 

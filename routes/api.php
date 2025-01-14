@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CityController;
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\ModelsController;
 use App\Http\Controllers\OrderController;
@@ -8,6 +9,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductLoveController;
 use App\Http\Controllers\SocialController;
 use App\Http\Controllers\UserAuthController;
+use App\Models\City;
 use Illuminate\Support\Facades\Route;
 
 
@@ -54,3 +56,5 @@ Route::controller(GoogleAuthController::class)->middleware('web')->prefix('auth/
 
 Route::get('/social' , [SocialController::class , 'index']);
 Route::get('/models' , [ModelsController::class , 'index']);
+
+Route::get('/city' , [CityController::class , 'index']);

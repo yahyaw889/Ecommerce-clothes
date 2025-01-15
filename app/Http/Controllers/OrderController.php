@@ -104,8 +104,8 @@ class OrderController extends Controller
             'last_name' => 'required',
             'email' => 'required|email',
             'phone' => 'required',
-            'country' => 'required',
-            'city' => 'required|integer|min:1',
+            'country' => 'nullable',
+            'city' => 'required|integer|min:1|exists:cities,id',
             'address' => 'required',
             'items' => 'nullable|array',
             'items.*.product_id' => 'required|string|max:255|exists:products,id',
@@ -137,7 +137,7 @@ class OrderController extends Controller
             'last_name' => $request->last_name,
             'email' => $request->email,
             'phone' => $request->phone,
-            'country' => $request->country,
+            'country' => $request->country ?? 'EGY',
             'address' => $request->address,
             'city_id' => $request->city
         ]);

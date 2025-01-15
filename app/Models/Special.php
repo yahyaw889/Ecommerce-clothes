@@ -73,12 +73,7 @@ class Special extends Model
         });
 
 
-        static::saving(function ($model) {
-            $special = $model->special;
-            if (empty(array_filter($special, fn ($item) => !empty($item['name']) || !empty($item['price']) || !empty($item['image']) || !empty($item['size']) || !empty($item['color']) || !empty($item['order_id']) ))) {
-                $model->special = [];
-            }
-        });
+
     }
 
 

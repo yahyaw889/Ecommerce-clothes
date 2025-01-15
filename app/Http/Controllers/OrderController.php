@@ -25,22 +25,22 @@ class OrderController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function __construct()
-    {
-        $key = request()->ip(); // Or use auth()->id() for authenticated users
+    // public function __construct()
+    // {
+    //     $key = request()->ip(); // Or use auth()->id() for authenticated users
 
-        if (RateLimiter::tooManyAttempts($key, 1)) {
-            // Calculate retry time
-            $retryAfter = RateLimiter::availableIn($key);
+    //     if (RateLimiter::tooManyAttempts($key, 1)) {
+    //         // Calculate retry time
+    //         $retryAfter = RateLimiter::availableIn($key);
 
-            throw new ThrottleRequestsException(
-            "Too many requests. Please wait {$retryAfter} seconds."
-            );
-        }
+    //         throw new ThrottleRequestsException(
+    //         "Too many requests. Please wait {$retryAfter} seconds."
+    //         );
+    //     }
 
-        // Allow request and set the cooldown for 1 minute
-        RateLimiter::hit($key, 60); // The second parameter is the expiration time in seconds
-    }
+    //     // Allow request and set the cooldown for 1 minute
+    //     RateLimiter::hit($key, 60); // The second parameter is the expiration time in seconds
+    // }
     /**
      * Store a newly created resource in storage.
      */

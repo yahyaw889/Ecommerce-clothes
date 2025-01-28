@@ -1,3 +1,15 @@
+# Deny access to .env and other sensitive files
+<FilesMatch "^\.env$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Block access to any file starting with a dot (e.g., .htaccess, .gitignore, etc.)
+<FilesMatch "^\.">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
 <IfModule mod_rewrite.c>
     <IfModule mod_negotiation.c>
         Options -MultiViews -Indexes
@@ -26,4 +38,3 @@
     Header Set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"
     Header Set Access-Control-Allow-Credentials "true"
 </IfModule>
-

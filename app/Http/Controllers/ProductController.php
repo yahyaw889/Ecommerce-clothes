@@ -245,10 +245,10 @@ class ProductController extends Controller
 
         if (is_array($value)) {
             foreach ($value as $image) {
-                $lastArray[] = asset('public/storage/' . $image);
+                $lastArray[] = asset('storage/' . $image);
             }
         }else{
-            $lastArray[] = asset('public/storage/' . $value);
+            $lastArray[] = asset('storage/' . $value);
         }
 
         return $lastArray;

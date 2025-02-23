@@ -60,7 +60,7 @@ class ModelsController extends Controller
 
 protected function accessorImages(?string $value): string
 {
-        return asset('public/storage/' . $value);
+        return asset('storage/' . $value);
 }
 
 

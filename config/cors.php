@@ -19,7 +19,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => [ 'http://localhost:5173' , 'https://artivecolthes.com'],
+    'allowed_origins' => ['http://localhost:5173', 'https://artivecolthes.com', 'https://api.artivecolthes.com'],
 
     'allowed_origins_patterns' => [],
 
@@ -30,5 +30,4 @@ return [
     'max_age' => 0,
 
     'supports_credentials' => true,
-
 ];

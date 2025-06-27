@@ -18,7 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->append(HandleCors::class);
         // $middleware->append(RateLimitMiddleware::class);
         $middleware->validateCsrfTokens(except: [
-            'api/card/*'
+            '*/api/card/*'
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

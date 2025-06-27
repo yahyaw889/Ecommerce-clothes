@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\GoogleAuthController;
@@ -9,7 +10,6 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductLoveController;
 use App\Http\Controllers\SocialController;
 use App\Http\Controllers\UserAuthController;
-use App\Models\City;
 use Illuminate\Support\Facades\Route;
 
 
@@ -58,3 +58,11 @@ Route::get('/social' , [SocialController::class , 'index']);
 Route::get('/models' , [ModelsController::class , 'index']);
 
 Route::get('/city' , [CityController::class , 'index']);
+
+
+
+Route::controller(CartController::class)->prefix('card')->middleware('web')->group(function () {
+    Route::get('/',  'show');
+    Route::post('/add',  'add');
+    Route::post('/remove',  'remove');
+});

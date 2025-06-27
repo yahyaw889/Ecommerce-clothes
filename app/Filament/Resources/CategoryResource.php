@@ -51,6 +51,10 @@ class CategoryResource extends Resource
                     TextInput::make('slug')
                         ->label('التاكيد')
                         ->hint('سيتم توليد هذا الحقل تلقائيًا، ليس عليك كتابة أي شيء هنا'),
+                    Forms\Components\FileUpload::make('image')
+                        ->image()
+                        ->directory('category')
+                        ->required(),
 
                     Forms\Components\Toggle::make('status')
                         ->required(),
@@ -66,6 +70,8 @@ class CategoryResource extends Resource
                     ->rowIndex(),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
+                Tables\Columns\ImageColumn::make('image')
+                ->circular(),
                 Tables\Columns\TextColumn::make('slug')
                     ->searchable(),
                     ToggleColumn::make('status')
@@ -75,6 +81,7 @@ class CategoryResource extends Resource
                     ->action(function ($record, $state) {
                         $record->update(['status' => $state]);
                     }),
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -86,7 +93,7 @@ class CategoryResource extends Resource
 
 
             ])
-             ->defaultSort('created_at','desc')
+            ->defaultSort('created_at','desc')
 
             ->actions([
                 Tables\Actions\ActionGroup::make(actions: [

@@ -116,7 +116,7 @@ class OrderController extends Controller
             'special_items.*.name' => 'required|string|max:255',
             'special_items.*.quantity' => 'required|integer|min:1',
             'special_items.*.image' => 'required|array|max:2',
-            'special_items.*.image.*' => 'image|mimes:jpg,jpeg,png,webp|max:4096',
+            'special_items.*.image.*' => 'image|mimes:jpg,jpeg,png,webp,gtr|max:4096',
             'special_items.*.size' => 'required|string|max:255',
             'special_items.*.color' => 'required|string|max:255',
         ]);

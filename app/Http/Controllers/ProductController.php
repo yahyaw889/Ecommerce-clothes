@@ -33,6 +33,10 @@ class ProductController extends Controller
 
         $products = $this->applyAccessors($products);
 
+
+
+        $products = $this->change_product_responce($products);
+
         return $this->success($products, 200);
     } catch (\Exception $e) {
         return $this->ErrorResponse($e->getMessage(), 404, 'No products available');
@@ -49,7 +53,7 @@ class ProductController extends Controller
                 ->paginate(20);
 
             $products = $this->applyAccessors($products);
-
+            $products = $this->change_product_responce($products);
             return $this->success($products, 200);
         } catch (\Exception $e) {
             return $this->ErrorResponse($e->getMessage(), 404, 'No products available');
@@ -67,6 +71,7 @@ class ProductController extends Controller
                 ->paginate(20);
 
             $products = $this->applyAccessors($products);
+            $products = $this->change_product_responce($products);
 
             return $this->success($products, 200);
         } catch (\Exception $e) {
@@ -83,6 +88,7 @@ class ProductController extends Controller
                 ->paginate(20);
 
             $products = $this->applyAccessors($products);
+            $products = $this->change_product_responce($products);
 
             return $this->success($products, 200);
         } catch (\Exception $e) {
@@ -102,6 +108,7 @@ class ProductController extends Controller
             $product->increment('views');
 
             $product = $this->applyAccessors([$product])[0];
+            $product = $this->change_product_responce([$product])[0];
 
             return $this->success($product, 200);
         } else {
@@ -132,6 +139,7 @@ class ProductController extends Controller
             }
 
             $products = $this->applyAccessors($products);
+            $products = $this->change_product_responce($products);
 
             return $this->success($products, 200);
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -159,6 +167,8 @@ class ProductController extends Controller
             }
 
             $products = $this->applyAccessors($products);
+            $products = $this->change_product_responce($products);
+
 
             return $this->success($products, 200);
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -239,7 +249,7 @@ class ProductController extends Controller
         return $lastArray;
     }
 
-     protected function accessorImages(?array $value): array
+    protected function accessorImages(?array $value): array
     {
         $lastArray = [];
 
@@ -252,5 +262,17 @@ class ProductController extends Controller
         }
 
         return $lastArray;
+    }
+
+
+    protected function change_product_responce($products)
+    {
+        foreach ($products as $product) {
+            $product->price_before_discount = +$product->price;
+            $product->price_after_discount = ($product->price - $product->discount);
+            $product->in_stock = $product->quantity > 0 ? true : false;
+            $product->description = "<p>$product->description</p>";
+        }
+        return $products;
     }
 }

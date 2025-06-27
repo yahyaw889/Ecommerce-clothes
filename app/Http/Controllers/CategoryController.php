@@ -15,12 +15,16 @@ class CategoryController extends Controller
 
     public function index()
     {
-        $categories = Category::
-        where('status', 1)
-        ->get();
+        $categories = Category::query()
+            ->where('status', 1)
+            ->get();
 
         if ($categories->isEmpty()) {
             return $this->ErrorResponse('No Categories found', 404, 'No Categories found');
+        }
+
+        foreach ($categories as $cate) {
+            $cate->image = $cate->image ?  asset('storage/' . $cate->image) : null;
         }
 
         return $this->success($categories, 200);
@@ -33,6 +37,22 @@ class CategoryController extends Controller
         }
 
         return $this->success($brand);
+    }
+
+
+    protected function accessorImages(?array $value): array
+    {
+        $lastArray = [];
+
+        if (is_array($value)) {
+            foreach ($value as $image) {
+                $lastArray[] = asset('storage/' . $image);
+            }
+        }else{
+            $lastArray[] = asset('storage/' . $value);
+        }
+
+        return $lastArray;
     }
 
 }
